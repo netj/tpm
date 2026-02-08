@@ -86,18 +86,15 @@ plugin_name_helper() {
 	local plugin_name="$(basename "$plugin" .git)"
 	local user_name="$(basename "$(dirname "$plugin")")"
         local use_repo_user=false
-        if [ -e $(tpm_path)/tpm ]; then
+        if [ -e $(tpm_path)/tpm ]; then  # keep the legacy behavior of using only the unqualified repo name if tpm is already checked out unqualified
 	    case $plugin_name in
-	        tmux)  # ambiguous repo names that can clash, e.g., dracula/tmux, catppuccin/tmux, rose-pine/tmux, etc.
-	            echo "$user_name-$plugin_name"
-	            ;;
-	        *)
-	            # keep legacy behavior, until reinstalled
-	            echo "$plugin_name"
+	        # exceptions for when ambiguous repo names that clash, e.g., dracula/tmux, catppuccin/tmux, rose-pine/tmux, etc.
+	        tmux) echo "$user_name/$plugin_name" ;;
+	        *) echo "$plugin_name" ;;
 	    esac
 	else
 	    # qualify all plugins with the user/repo names
-	    echo "$user_name-$plugin_name"
+	    echo "$user_name/$plugin_name"
 	fi
 }
 
