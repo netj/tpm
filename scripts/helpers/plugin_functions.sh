@@ -85,13 +85,20 @@ plugin_name_helper() {
 	# get only the part after the last slash, without the .git, e.g. "plugin_name"
 	local plugin_name="$(basename "$plugin" .git)"
 	local user_name="$(basename "$(dirname "$plugin")")"
-	case $plugin_name in
-	    tmux)  # ambiguous repo names that can clash, e.g., dracula/tmux, catppuccin/tmux, rose-pine/tmux, etc.
-	        echo "$user_name-$plugin_name"
-	        ;;
-	    *)
-	        echo "$plugin_name"
-	esac
+        local use_repo_user=false
+        if [ -e $(tpm_path)/tpm ]; then
+	    case $plugin_name in
+	        tmux)  # ambiguous repo names that can clash, e.g., dracula/tmux, catppuccin/tmux, rose-pine/tmux, etc.
+	            echo "$user_name-$plugin_name"
+	            ;;
+	        *)
+	            # keep legacy behavior, until reinstalled
+	            echo "$plugin_name"
+	    esac
+	else
+	    # qualify all plugins with the user/repo names
+	    echo "$user_name-$plugin_name"
+	fi
 }
 
 plugin_path_helper() {
