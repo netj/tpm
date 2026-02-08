@@ -82,11 +82,16 @@ tpm_plugins_list_helper() {
 # 2. "user/plugin_name"
 plugin_name_helper() {
 	local plugin="$1"
-	# get only the part after the last slash, e.g. "plugin_name.git"
-	local plugin_basename="$(basename "$plugin")"
-	# remove ".git" extension (if it exists) to get only "plugin_name"
-	local plugin_name="${plugin_basename%.git}"
-	echo "$plugin_name"
+	# get only the part after the last slash, without the .git, e.g. "plugin_name"
+	local plugin_name="$(basename "$plugin" .git)"
+	local user_name="$(basename "$(dirname "$plugin")")"
+	case $plugin_name in
+	    tmux)  # ambiguous repo names that can clash, e.g., dracula/tmux, catppuccin/tmux, rose-pine/tmux, etc.
+	        echo "$user_name-$plugin_name"
+	        ;;
+	    *)
+	        echo "$plugin_name"
+	esac
 }
 
 plugin_path_helper() {

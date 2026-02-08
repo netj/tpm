@@ -15,12 +15,13 @@ fi
 clone() {
 	local plugin="$1"
 	local branch="$2"
+	local plugin_path="$(plugin_path_helper "$plugin")"
 	if [ -n "$branch" ]; then
 		cd "$(tpm_path)" &&
-			GIT_TERMINAL_PROMPT=0 git clone -b "$branch" --single-branch --recursive "$plugin" >/dev/null 2>&1
+			GIT_TERMINAL_PROMPT=0 git clone -b "$branch" --single-branch --recursive "$plugin" "$plugin_path" >/dev/null 2>&1
 	else
 		cd "$(tpm_path)" &&
-			GIT_TERMINAL_PROMPT=0 git clone --single-branch --recursive "$plugin" >/dev/null 2>&1
+			GIT_TERMINAL_PROMPT=0 git clone --single-branch --recursive "$plugin" "$plugin_path" >/dev/null 2>&1
 	fi
 }
 
